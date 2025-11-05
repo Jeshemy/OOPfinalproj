@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="oop.tanregister.register.MainMenuController"
+      alignment="CENTER"
+      spacing="20"
+      prefWidth="650"
+      prefHeight="400">
+
+    <padding>
+        <Insets top="20" right="40" bottom="20" left="40"/>
+    </padding>
+
+    <Text text="Main Menu">
+        <font>
+            <Font name="Arial Bold" size="24"/>
+        </font>
+    </Text>
+
+</VBox>
