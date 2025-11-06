@@ -12,7 +12,6 @@ public class MainMenu extends Application {
     @Override
     public void start(Stage stage) {
         try {
-            // Correctly load mainmenu.fxml relative to this class
             FXMLLoader fxmlLoader = new FXMLLoader(MainMenu.class.getResource("mainmenu.fxml"));
             Parent root = fxmlLoader.load();
 

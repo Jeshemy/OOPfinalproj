@@ -18,7 +18,7 @@ public class LoginController {
     @FXML private Button exitButton;
 
     @FXML
-    private void handleLogin() {
+    private void handleLogin() throws Exception {
         String email = emailField.getText().trim();
         String password = passwordField.getText().trim();
 
@@ -27,28 +27,23 @@ public class LoginController {
             return;
         }
 
-        boolean found = UsersData.getUsers().stream()
-                .anyMatch(u -> email.equals(u.getEmail()) && password.equals(u.getPassword()));
-
-        if (found) {
+        if (MongoDB.validateLogin(email, password)) {
             showAlert(AlertType.INFORMATION, "Login Successful", "Welcome back!");
 
             try {
                 Stage currentStage = (Stage) loginButton.getScene().getWindow();
 
-                // Correct path: update "/path/to/mainmenu.fxml" with your actual FXML path
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/oop/tanregister/register/mainmenu.fxml"));
                 Parent root = loader.load();
 
                 Scene scene = new Scene(root, 700, 550);
                 currentStage.setTitle("Main Menu");
                 currentStage.setScene(scene);
-                currentStage.show();  // important to refresh stage view
+                currentStage.show();
 
             } catch (IOException e) {
                 showAlert(AlertType.ERROR, "Error", "Could not open Main Menu:\n" + e.getMessage());
             }
-
         } else {
             showAlert(AlertType.ERROR, "Login Failed", "Invalid email or password.");
         }
@@ -60,13 +55,12 @@ public class LoginController {
             Stage currentStage = (Stage) exitButton.getScene().getWindow();
             currentStage.close();
 
-            // Correct path: update "/path/to/Register.fxml" to your actual FXML location
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/oop/tanregister/register/register.fxml"));
             Parent root = loader.load();
 
             Stage registerStage = new Stage();
             registerStage.setTitle("Register");
-            registerStage.setScene(new Scene(root, 700, 550));  // set scene size consistent with your design
+            registerStage.setScene(new Scene(root, 700, 550));
             registerStage.show();
 
         } catch (IOException e) {

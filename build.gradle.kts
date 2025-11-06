@@ -54,3 +54,11 @@ jlink {
     }
 }
 
+dependencies {
+    implementation(platform("org.mongodb:mongodb-driver-bom:5.6.1"))
+    implementation("org.mongodb:mongodb-driver-sync");
+    implementation("org.mongodb:mongodb-driver-sync:4.10.2")
+    implementation("org.slf4j:slf4j-api:2.0.9")
+    implementation("org.slf4j:slf4j-simple:2.0.9")
+}
+

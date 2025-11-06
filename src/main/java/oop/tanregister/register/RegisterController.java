@@ -6,6 +6,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 
+import java.time.LocalDateTime;
+
 public class RegisterController {
 
     @FXML private TextField firstNameField;
@@ -19,8 +21,6 @@ public class RegisterController {
     @FXML private Button cancelButton;
     @FXML private Button loginButton;
 
-
-    // === SAVE ===
     @FXML
     private void handleSave(ActionEvent event) {
         String firstName = firstNameField.getText().trim();
@@ -31,9 +31,6 @@ public class RegisterController {
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
 
-
-
-        // === Validation ===
         if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() ||
                 phone.isEmpty() || address.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             showAlert(AlertType.ERROR, "Missing Information", "Please fill in all fields.");
@@ -45,38 +42,31 @@ public class RegisterController {
             return;
         }
 
-        // === Create and save user ===
-        Users newUser = new Users(
-                firstName,
-                "", // middle name left blank
-                lastName,
-                email,
-                0, // no age in this form
-                "", // no birthdate in this form
-                phone,
-                address,
-                password
-        );
+        if (MongoDB.emailExists(email)) {
+            showAlert(AlertType.ERROR, "Duplicate Email", "An account with this email already exists.");
+            return;
+        }
 
-        UsersData.addUser(newUser);
+        try {
+            LocalDateTime now = LocalDateTime.now();
 
-        showAlert(AlertType.INFORMATION, "Registration Successful",
-                String.format("Welcome, %s %s!\nYou can now log in.", firstName, lastName));
+            // Adjust MongoDB.addUser call accordingly
+            MongoDB.addUser(firstName, lastName, email, phone, address, password, now, now);
 
-        clearForm();
-
-        // ✅ Optional debug confirmation
-        System.out.println("✅ Total users registered: " + UsersData.getUsers().size());
+            showAlert(AlertType.INFORMATION, "Registration Successful",
+                    String.format("Welcome, %s %s!\nYou can now log in.", firstName, lastName));
+            clearForm();
+        } catch (Exception e) {
+            showAlert(AlertType.ERROR, "Registration Failed", "Could not save user: " + e.getMessage());
+        }
     }
 
-    // === CANCEL ===
     @FXML
     private void handleCancel(ActionEvent event) {
         clearForm();
         showAlert(AlertType.INFORMATION, "Form Cleared", "All fields have been reset.");
     }
 
-    // === LOGIN REDIRECT ===
     @FXML
     private void handleLoginRedirect(ActionEvent event) {
         try {
@@ -88,11 +78,9 @@ public class RegisterController {
             loginApp.start(stage);
         } catch (Exception ex) {
             showAlert(AlertType.ERROR, "Error", "Could not open login page:\n" + ex.getMessage());
-            ex.printStackTrace();
         }
     }
 
-    // === UTILITY ===
     private void clearForm() {
         firstNameField.clear();
         lastNameField.clear();
